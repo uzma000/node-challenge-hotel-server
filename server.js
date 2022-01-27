@@ -30,11 +30,26 @@ app.post("/bookings", function (request, response) {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
+  // Object destruction
+  let { title, firstName, surname, email, checkInDate, checkOutDate } =
+    request.body;
+
+  if (
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !checkInDate ||
+    !checkOutDate
+  ) {
+    response.status(400).send({ message: "Please fill in all the fields" });
+  }
+
   bookings.push(newBooking);
   newBooking.id = bookings.findIndex(newBooking) + 1;
   newBooking.roomId = newBooking.id + 10;
 
-  return response.json(bookings);
+  response.json(bookings);
 });
 
 // Get a booking by Id
@@ -52,11 +67,9 @@ app.delete("/bookings/:id", function (request, response) {
 
   const index = bookings.findIndex((booking) => booking.id == searchedId);
   bookings.splice(index, 1);
-  response
-    .status(200)
-    .json({
-      msg: `Booking with id:${searchedId} has been deleted successfully.`,
-    });
+  response.status(200).json({
+    msg: `Booking with id:${searchedId} has been deleted successfully.`,
+  });
 });
 
 // TODO add your routes and helper functions here
